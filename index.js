@@ -46,7 +46,11 @@ async function bootstrap() {
 
     for (let i = 0; i < ntx; i++) {
       const utxos = await rpcPost({ method: 'listunspent', params: [] })
-      const sendto = await rpcPost({ method: 'getnewaddress', params: [] })
+      let sendto = await rpcPost({ method: 'getnewaddress', params: [] })
+      const multi = Math.round(Math.random()) == 1
+      if (multi) {
+        sendto = await rpcPost({ method: 'addmultisigaddress', params: [1, [sendto.result]] })
+      }
       const index = randInt(utxos.result.length)
       const utxo = utxos.result[index]
       if (!utxo) {
